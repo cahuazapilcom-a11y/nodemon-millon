@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NODEMON MILLON — Ofertas Digitales con IA</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root {
+    --bg: #08080f;
+    --card: #10101a;
+    --card2: #16162a;
+    --border: #2a2a45;
+    --purple: #7c3aed;
+    --purple2: #9f5cff;
+    --gold: #f59e0b;
+    --gold2: #fbbf24;
+    --green: #10b981;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #0f0f20 0%, #1a0a35 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--purple), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 900; color: white;
+  }
+  .logo-text h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text h1 span { color: var(--gold); }
+  .logo-text p { font-size: 0.78rem; color: var(--muted); }
+  .badge {
+    background: linear-gradient(135deg, var(--purple), var(--purple2));
+    color: white; font-size: 0.72rem; font-weight: 700;
+    padding: 5px 12px; border-radius: 20px; letter-spacing: 0.5px;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    overflow-x: auto;
+  }
+  .progress-steps {
+    display: flex; align-items: stretch;
+    max-width: 900px; margin: 0 auto;
+    min-width: 500px;
+  }
+  .step-tab {
+    flex: 1; padding: 16px 8px; display: flex; flex-direction: column;
+    align-items: center; gap: 6px; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s; opacity: 0.4; pointer-events: none;
+  }
+  .step-tab.unlocked { opacity: 0.65; pointer-events: auto; cursor: pointer; }
+  .step-tab.active { opacity: 1; border-bottom-color: var(--purple); }
+  .step-tab.done { opacity: 0.8; border-bottom-color: var(--green); }
+  .step-tab:hover.unlocked { opacity: 0.9; }
+  .step-icon { font-size: 1.4rem; }
+  .step-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .step-tab.active .step-label { color: var(--purple2); }
+  .step-tab.done .step-label { color: var(--green); }
+
+  /* ── MAIN ── */
+  main { max-width: 880px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* ── STEP CARD ── */
+  .step-page { display: none; animation: fadeIn 0.3s ease; }
+  .step-page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .step-header { margin-bottom: 28px; }
+  .step-header h2 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .step-header h2 span { color: var(--gold); }
+  .step-header p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px; margin-bottom: 20px;
+  }
+  .card-label {
+    font-size: 0.8rem; font-weight: 700; color: var(--purple2);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+
+  textarea {
+    width: 100%; background: var(--card2); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-size: 0.95rem;
+    padding: 14px 16px; resize: vertical; line-height: 1.6;
+    font-family: inherit; transition: border-color 0.2s;
+  }
+  textarea:focus { outline: none; border-color: var(--purple); }
+  textarea::placeholder { color: #4a4a6a; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px; border-radius: 10px; font-size: 0.9rem;
+    font-weight: 700; border: none; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--purple), var(--purple2));
+    color: white;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.4); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-gold {
+    background: linear-gradient(135deg, #d97706, var(--gold));
+    color: #1a0a00; font-weight: 800;
+  }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,158,11,0.4); }
+  .btn-gold:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-outline {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .btn-outline:hover { border-color: var(--purple); color: var(--text); }
+  .btn-green {
+    background: linear-gradient(135deg, #059669, var(--green));
+    color: white;
+  }
+  .btn-green:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+  .btn-green:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-sm { padding: 7px 14px; font-size: 0.8rem; }
+
+  .btn-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 16px; }
+
+  /* ── AI RESPONSE ── */
+  .ai-box {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    margin-top: 16px; display: none; position: relative;
+  }
+  .ai-box.visible { display: block; }
+  .ai-box-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-tag {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.78rem; font-weight: 700; color: var(--purple2);
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .ai-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--purple2); animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .ai-dot.done { background: var(--green); animation: none; }
+  .ai-content { font-size: 0.92rem; line-height: 1.75; color: #cbd5e1; }
+  .ai-content h2 { font-size: 1.05rem; font-weight: 700; color: var(--text); margin: 18px 0 8px; }
+  .ai-content h3 { font-size: 0.95rem; font-weight: 600; color: var(--gold2); margin: 14px 0 6px; }
+  .ai-content ul, .ai-content ol { padding-left: 20px; margin: 8px 0; }
+  .ai-content li { margin-bottom: 5px; }
+  .ai-content strong { color: var(--text); font-weight: 600; }
+  .ai-content p { margin-bottom: 10px; }
+  .ai-content blockquote { border-left: 3px solid var(--purple); padding-left: 14px; color: var(--muted); margin: 10px 0; }
+
+  /* ── GENERATION CARDS ── */
+  .gen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 600px) { .gen-grid { grid-template-columns: 1fr; } }
+  .gen-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .gen-card-icon { font-size: 2rem; }
+  .gen-card h3 { font-size: 1rem; font-weight: 700; }
+  .gen-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+  .gen-result {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px; margin-top: 12px;
+    display: none;
+  }
+  .gen-result.visible { display: block; }
+  .gen-result-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .gen-result-title { font-size: 0.85rem; font-weight: 700; color: var(--gold2); }
+  .copy-btn {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--muted); font-size: 0.75rem; font-weight: 600;
+    padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .copy-btn:hover { border-color: var(--green); color: var(--green); }
+  .copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+  /* ── SUMMARY BAR ── */
+  .summary {
+    background: linear-gradient(135deg, #0f0f20, #1a0a35);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 20px; margin-bottom: 24px;
+    display: none; gap: 12px; flex-wrap: wrap;
+  }
+  .summary.visible { display: flex; }
+  .sum-item { font-size: 0.8rem; }
+  .sum-label { color: var(--muted); }
+  .sum-value { color: var(--purple2); font-weight: 600; }
+
+  /* ── SPINNER ── */
+  .spinner {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: white; animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  .spinner.visible { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--green); color: white; padding: 10px 22px;
+    border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+    transition: transform 0.3s; z-index: 1000; pointer-events: none;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── API KEY OVERLAY ── */
+  #apiOverlay {
+    position: fixed; inset: 0; background: rgba(8,8,15,0.95);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 500; padding: 20px;
+  }
+  .api-modal {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 40px; max-width: 480px; width: 100%;
+    text-align: center;
+  }
+  .api-modal h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+  .api-modal p { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; line-height: 1.6; }
+  .api-modal input {
+    width: 100%; background: var(--card2); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-size: 0.9rem;
+    padding: 12px 16px; margin-bottom: 14px; font-family: monospace;
+  }
+  .api-modal input:focus { outline: none; border-color: var(--purple); }
+  .api-link { color: var(--purple2); font-size: 0.82rem; display: block; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- API KEY OVERLAY -->
+<div id="apiOverlay">
+  <div class="api-modal">
+    <div style="font-size:3rem;margin-bottom:16px">💰</div>
+    <h2>NODEMON <span style="color:var(--gold)">MILLON</span></h2>
+    <p>Ingresa tu API Key de Anthropic para activar el sistema de inteligencia artificial.</p>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." />
+    <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="saveApiKey()">
+      ⚡ Activar Sistema
+    </button>
+    <a href="https://console.anthropic.com/settings/keys" target="_blank" class="api-link">
+      Obtener API Key gratis →
+    </a>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">M</div>
+    <div class="logo-text">
+      <h1>NODEMON <span>MILLON</span></h1>
+      <p>Sistema de Ofertas Digitales con IA</p>
+    </div>
+  </div>
+  <span class="badge">⚡ POWERED BY CLAUDE</span>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="step-tab active unlocked" data-step="0" onclick="goToStep(0)">
+      <span class="step-icon">💡</span>
+      <span class="step-label">Tu Idea</span>
+    </div>
+    <div class="step-tab" data-step="1" onclick="goToStep(1)">
+      <span class="step-icon">🎯</span>
+      <span class="step-label">Audiencia</span>
+    </div>
+    <div class="step-tab" data-step="2" onclick="goToStep(2)">
+      <span class="step-icon">🔥</span>
+      <span class="step-label">Promesa</span>
+    </div>
+    <div class="step-tab" data-step="3" onclick="goToStep(3)">
+      <span class="step-icon">📦</span>
+      <span class="step-label">Producto</span>
+    </div>
+    <div class="step-tab" data-step="4" onclick="goToStep(4)">
+      <span class="step-icon">🚀</span>
+      <span class="step-label">Generar</span>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- SUMMARY BAR -->
+  <div class="summary" id="summaryBar"></div>
+
+  <!-- ── PASO 1: IDEA ── -->
+  <div class="step-page active" id="page-0">
+    <div class="step-header">
+      <h2>💡 Define Tu <span>Idea</span></h2>
+      <p>Cuéntame sobre tu conocimiento, experiencia o idea de negocio. No importa si es algo que ya tienes o un concepto nuevo — la IA lo analizará y refinará para ti.</p>
+    </div>
+    <div class="card">
+      <div class="card-label">¿Cuál es tu idea o expertise?</div>
+      <textarea id="input-0" rows="5"
+        placeholder="Ej: Sé mucho sobre fotografía y quiero enseñar a personas que quieren tomar mejores fotos con su celular. También podría hacer algo sobre edición con Lightroom..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="analyzeStep(0)">
+          <span id="spin-0" class="spinner"></span>
+          🤖 Analizar con IA
+        </button>
+      </div>
+    </div>
+    <div class="ai-box" id="ai-0">
+      <div class="ai-box-header">
+        <div class="ai-tag"><div class="ai-dot" id="dot-0"></div> Análisis de IA</div>
+        <button class="copy-btn" onclick="copyContent('ai-content-0', this)">📋 Copiar</button>
+      </div>
+      <div class="ai-content" id="ai-content-0"></div>
+    </div>
+    <div class="btn-row" id="nav-0" style="display:none">
+      <button class="btn btn-gold" onclick="nextStep(0)">Continuar a Audiencia →</button>
+    </div>
+  </div>
+
+  <!-- ── PASO 2: AUDIENCIA ── -->
+  <div class="step-page" id="page-1">
+    <div class="step-header">
+      <h2>🎯 Define Tu <span>Audiencia</span></h2>
+      <p>Conocer a tu cliente ideal en profundidad es la clave para crear una oferta que realmente venda. La IA creará un avatar detallado basado en tu idea.</p>
+    </div>
+    <div class="card">
+      <div class="card-label">¿Algo específico sobre tu cliente ideal? (opcional)</div>
+      <textarea id="input-1" rows="3"
+        placeholder="Ej: Me gustaría enfocarme en mamás que trabajan desde casa, entre 28-45 años... (o deja en blanco y la IA lo definirá automáticamente)"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="analyzeStep(1)">
+          <span id="spin-1" class="spinner"></span>
+          🤖 Definir Audiencia con IA
+        </button>
+      </div>
+    </div>
+    <div class="ai-box" id="ai-1">
+      <div class="ai-box-header">
+        <div class="ai-tag"><div class="ai-dot" id="dot-1"></div> Análisis de IA</div>
+        <button class="copy-btn" onclick="copyContent('ai-content-1', this)">📋 Copiar</button>
+      </div>
+      <div class="ai-content" id="ai-content-1"></div>
+    </div>
+    <div class="btn-row" id="nav-1" style="display:none">
+      <button class="btn btn-outline" onclick="goToStep(0)">← Atrás</button>
+      <button class="btn btn-gold" onclick="nextStep(1)">Continuar a Promesa →</button>
+    </div>
+  </div>
+
+  <!-- ── PASO 3: PROMESA ── -->
+  <div class="step-page" id="page-2">
+    <div class="step-header">
+      <h2>🔥 Crea Tu <span>Promesa</span></h2>
+      <p>La promesa es el corazón de tu oferta — la transformación específica que recibirá tu cliente. Una promesa poderosa multiplica las conversiones.</p>
+    </div>
+    <div class="card">
+      <div class="card-label">¿Tienes alguna idea del resultado que prometes? (opcional)</div>
+      <textarea id="input-2" rows="3"
+        placeholder="Ej: Quiero prometer que en 30 días puedan tomar fotos profesionales con el celular... (o deja en blanco)"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="analyzeStep(2)">
+          <span id="spin-2" class="spinner"></span>
+          🤖 Crear Promesa con IA
+        </button>
+      </div>
+    </div>
+    <div class="ai-box" id="ai-2">
+      <div class="ai-box-header">
+        <div class="ai-tag"><div class="ai-dot" id="dot-2"></div> Análisis de IA</div>
+        <button class="copy-btn" onclick="copyContent('ai-content-2', this)">📋 Copiar</button>
+      </div>
+      <div class="ai-content" id="ai-content-2"></div>
+    </div>
+    <div class="btn-row" id="nav-2" style="display:none">
+      <button class="btn btn-outline" onclick="goToStep(1)">← Atrás</button>
+      <button class="btn btn-gold" onclick="nextStep(2)">Continuar a Producto →</button>
+    </div>
+  </div>
+
+  <!-- ── PASO 4: PRODUCTO ── -->
+  <div class="step-page" id="page-3">
+    <div class="step-header">
+      <h2>📦 Estructura Tu <span>Producto</span></h2>
+      <p>Diseña una oferta irresistible con el producto correcto, bonos que aumenten el valor percibido y una estrategia de precios que maximice tus ventas.</p>
+    </div>
+    <div class="card">
+      <div class="card-label">¿Tienes preferencias de formato o precio? (opcional)</div>
+      <textarea id="input-3" rows="3"
+        placeholder="Ej: Me gustaría hacer un curso en video, con precio entre $97-$197... (o deja en blanco)"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="analyzeStep(3)">
+          <span id="spin-3" class="spinner"></span>
+          🤖 Estructurar Producto con IA
+        </button>
+      </div>
+    </div>
+    <div class="ai-box" id="ai-3">
+      <div class="ai-box-header">
+        <div class="ai-tag"><div class="ai-dot" id="dot-3"></div> Análisis de IA</div>
+        <button class="copy-btn" onclick="copyContent('ai-content-3', this)">📋 Copiar</button>
+      </div>
+      <div class="ai-content" id="ai-content-3"></div>
+    </div>
+    <div class="btn-row" id="nav-3" style="display:none">
+      <button class="btn btn-outline" onclick="goToStep(2)">← Atrás</button>
+      <button class="btn btn-gold" onclick="nextStep(3)">🚀 Ir a Generar Materiales →</button>
+    </div>
+  </div>
+
+  <!-- ── PASO 5: GENERAR ── -->
+  <div class="step-page" id="page-4">
+    <div class="step-header">
+      <h2>🚀 Genera Tus <span>Materiales</span></h2>
+      <p>Con toda la información de tu oferta, la IA generará todos tus materiales de marketing en segundos. Haz clic en cada botón para generar.</p>
+    </div>
+
+    <div class="gen-grid">
+
+      <!-- Anuncios -->
+      <div class="gen-card">
+        <div class="gen-card-icon">📱</div>
+        <h3>Anuncios Publicitarios</h3>
+        <p>3 anuncios para Facebook/Instagram + script de video corto + segmentación</p>
+        <button class="btn btn-primary btn-sm" onclick="generate('anuncios', this)">
+          <span class="spinner" id="spin-anuncios"></span>
+          ✨ Generar Anuncios
+        </button>
+      </div>
+
+      <!-- Página de ventas -->
+      <div class="gen-card">
+        <div class="gen-card-icon">📄</div>
+        <h3>Página de Ventas</h3>
+        <p>Copy completo: headline, problema, solución, testimonios, precios y cierre</p>
+        <button class="btn btn-primary btn-sm" onclick="generate('pagina', this)">
+          <span class="spinner" id="spin-pagina"></span>
+          ✨ Generar Página
+        </button>
+      </div>
+
+      <!-- Emails -->
+      <div class="gen-card">
+        <div class="gen-card-icon">📧</div>
+        <h3>Secuencia de Emails</h3>
+        <p>5 emails completos: bienvenida, historia, solución, oferta y cierre urgente</p>
+        <button class="btn btn-primary btn-sm" onclick="generate('emails', this)">
+          <span class="spinner" id="spin-emails"></span>
+          ✨ Generar Emails
+        </button>
+      </div>
+
+      <!-- Posts sociales -->
+      <div class="gen-card">
+        <div class="gen-card-icon">📲</div>
+        <h3>Posts para Redes Sociales</h3>
+        <p>Instagram, Facebook, LinkedIn, Twitter/X, WhatsApp y bio optimizada</p>
+        <button class="btn btn-primary btn-sm" onclick="generate('posts', this)">
+          <span class="spinner" id="spin-posts"></span>
+          ✨ Generar Posts
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Resultados generados -->
+    <div id="result-anuncios" class="gen-result">
+      <div class="gen-result-header">
+        <span class="gen-result-title">📱 Anuncios Publicitarios</span>
+        <button class="copy-btn" onclick="copyContent('content-anuncios', this)">📋 Copiar Todo</button>
+      </div>
+      <div class="ai-content" id="content-anuncios"></div>
+    </div>
+
+    <div id="result-pagina" class="gen-result">
+      <div class="gen-result-header">
+        <span class="gen-result-title">📄 Página de Ventas</span>
+        <button class="copy-btn" onclick="copyContent('content-pagina', this)">📋 Copiar Todo</button>
+      </div>
+      <div class="ai-content" id="content-pagina"></div>
+    </div>
+
+    <div id="result-emails" class="gen-result">
+      <div class="gen-result-header">
+        <span class="gen-result-title">📧 Secuencia de Emails</span>
+        <button class="copy-btn" onclick="copyContent('content-emails', this)">📋 Copiar Todo</button>
+      </div>
+      <div class="ai-content" id="content-emails"></div>
+    </div>
+
+    <div id="result-posts" class="gen-result">
+      <div class="gen-result-header">
+        <span class="gen-result-title">📲 Posts para Redes Sociales</span>
+        <button class="copy-btn" onclick="copyContent('content-posts', this)">📋 Copiar Todo</button>
+      </div>
+      <div class="ai-content" id="content-posts"></div>
+    </div>
+
+    <div class="btn-row" style="margin-top:8px">
+      <button class="btn btn-outline" onclick="goToStep(3)">← Volver al Producto</button>
+    </div>
+  </div>
+
+</main>
+
+<div id="toast">✅ Copiado al portapapeles</div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────────
+const state = {
+  currentStep: 0,
+  apiKey: '',
+  data: { idea: '', audiencia: '', promesa: '', producto: '' },
+  analysis: ['', '', '', ''],
+  unlocked: [true, false, false, false, false],
+};
+
+const endpoints = ['/api/idea', '/api/audiencia', '/api/promesa', '/api/producto'];
+const dataKeys = ['idea', 'audiencia', 'promesa', 'producto'];
+const summaryLabels = ['💡 Idea', '🎯 Audiencia', '🔥 Promesa', '📦 Producto'];
+
+// ── API KEY ──────────────────────────────────────────────────────────────────
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key.startsWith('sk-ant')) {
+    alert('Por favor ingresa una API Key válida de Anthropic (comienza con sk-ant...)');
+    return;
+  }
+  state.apiKey = key;
+  document.getElementById('apiOverlay').style.display = 'none';
+  localStorage.setItem('millon_api_key', key);
+}
+
+// Check saved key
+(function() {
+  const saved = localStorage.getItem('millon_api_key');
+  if (saved) {
+    state.apiKey = saved;
+    document.getElementById('apiOverlay').style.display = 'none';
+  }
+})();
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function goToStep(step) {
+  if (!state.unlocked[step]) return;
+  state.currentStep = step;
+  document.querySelectorAll('.step-page').forEach((p, i) => {
+    p.classList.toggle('active', i === step);
+  });
+  document.querySelectorAll('.step-tab').forEach((t, i) => {
+    t.classList.remove('active');
+    if (i === step) t.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function unlockStep(step) {
+  state.unlocked[step] = true;
+  const tab = document.querySelectorAll('.step-tab')[step];
+  tab.classList.add('unlocked');
+  if (step < 4) {
+    const prevTab = document.querySelectorAll('.step-tab')[step - 1];
+    if (prevTab) prevTab.classList.add('done');
+  }
+}
+
+function nextStep(current) {
+  const next = current + 1;
+  unlockStep(next);
+  goToStep(next);
+  updateSummary();
+}
+
+// ── SUMMARY BAR ──────────────────────────────────────────────────────────────
+function updateSummary() {
+  const bar = document.getElementById('summaryBar');
+  const items = dataKeys
+    .map((k, i) => state.data[k] ? `<div class="sum-item"><span class="sum-label">${summaryLabels[i]}:</span> <span class="sum-value">${state.data[k].substring(0, 50)}${state.data[k].length > 50 ? '…' : ''}</span></div>` : '')
+    .filter(Boolean);
+  if (items.length > 0) {
+    bar.innerHTML = items.join('');
+    bar.classList.add('visible');
+  }
+}
+
+// ── STREAMING SSE ─────────────────────────────────────────────────────────────
+async function streamRequest(endpoint, body, contentEl, dotEl) {
+  dotEl.classList.remove('done');
+  contentEl.innerHTML = '<em style="color:var(--muted)">Generando...</em>';
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': state.apiKey,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    contentEl.innerHTML = `<span style="color:#f87171">Error: ${err}</span>`;
+    return '';
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let fullText = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop();
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        const raw = line.slice(6);
+        if (raw === '[DONE]') { dotEl.classList.add('done'); return fullText; }
+        try {
+          const { text, error } = JSON.parse(raw);
+          if (error) { contentEl.innerHTML = `<span style="color:#f87171">Error: ${error}</span>`; return ''; }
+          if (text) {
+            fullText += text;
+            contentEl.innerHTML = marked.parse(fullText);
+            contentEl.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          }
+        } catch {}
+      }
+    }
+  }
+  dotEl.classList.add('done');
+  return fullText;
+}
+
+// ── ANALYZE STEP ─────────────────────────────────────────────────────────────
+async function analyzeStep(step) {
+  const inputEl = document.getElementById(`input-${step}`);
+  const aiBox = document.getElementById(`ai-${step}`);
+  const contentEl = document.getElementById(`ai-content-${step}`);
+  const dotEl = document.getElementById(`dot-${step}`);
+  const spinEl = document.getElementById(`spin-${step}`);
+  const navEl = document.getElementById(`nav-${step}`);
+
+  const inputVal = inputEl.value.trim();
+
+  // Build body based on step
+  let body = {};
+  if (step === 0) {
+    if (!inputVal) { alert('Por favor describe tu idea o expertise.'); return; }
+    body = { idea: inputVal };
+    state.data.idea = inputVal;
+  } else if (step === 1) {
+    body = { idea: state.data.idea, ideaAnalisis: state.analysis[0] };
+    if (inputVal) body.extra = inputVal;
+  } else if (step === 2) {
+    body = { idea: state.data.idea, audiencia: state.analysis[1] };
+    if (inputVal) body.extra = inputVal;
+  } else if (step === 3) {
+    body = { idea: state.data.idea, audiencia: state.analysis[1], promesa: state.analysis[2] };
+    if (inputVal) body.extra = inputVal;
+  }
+
+  // UI: loading
+  spinEl.classList.add('visible');
+  aiBox.classList.add('visible');
+  navEl.style.display = 'none';
+  document.querySelectorAll('.btn-primary').forEach(b => b.disabled = true);
+
+  const result = await streamRequest(endpoints[step], body, contentEl, dotEl);
+
+  // UI: done
+  spinEl.classList.remove('visible');
+  document.querySelectorAll('.btn-primary').forEach(b => b.disabled = false);
+
+  if (result) {
+    state.analysis[step] = result;
+    state.data[dataKeys[step]] = result;
+    navEl.style.display = 'flex';
+  }
+}
+
+// ── GENERATE MATERIALS ────────────────────────────────────────────────────────
+async function generate(type, btn) {
+  const contentEl = document.getElementById(`content-${type}`);
+  const resultEl = document.getElementById(`result-${type}`);
+  const spinEl = document.getElementById(`spin-${type}`);
+  const dotEl = document.createElement('div');
+  dotEl.className = 'ai-dot';
+
+  const body = {
+    idea: state.data.idea || state.analysis[0],
+    audiencia: state.analysis[1],
+    promesa: state.analysis[2],
+    producto: state.analysis[3],
+  };
+
+  btn.disabled = true;
+  spinEl.classList.add('visible');
+  resultEl.classList.add('visible');
+  resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  await streamRequest(`/api/generar/${type}`, body, contentEl, dotEl);
+
+  spinEl.classList.remove('visible');
+  btn.disabled = false;
+  btn.innerHTML = `✅ Regenerar`;
+}
+
+// ── COPY TO CLIPBOARD ─────────────────────────────────────────────────────────
+async function copyContent(elId, btn) {
+  const el = document.getElementById(elId);
+  const text = el.innerText || el.textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.classList.add('copied');
+    btn.textContent = '✅ Copiado';
+    showToast();
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '📋 Copiar';
+    }, 2500);
+  } catch {
+    alert('No se pudo copiar. Selecciona el texto manualmente.');
+  }
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── API KEY HEADER INJECTION ──────────────────────────────────────────────────
+// The server reads X-API-Key header and uses it for Anthropic calls
+</script>
+</body>
+</html>

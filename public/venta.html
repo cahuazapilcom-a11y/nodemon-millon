@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construye tu Generador de Ofertas con IA — $7 Guía Completa</title>
+<meta name="description" content="Aprende a construir y vender tu propio generador de ofertas con IA en un fin de semana. Método paso a paso con código incluido.">
+
+<!-- Gumroad -->
+<script src="https://gumroad.com/js/gumroad.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #08080f;
+    --card: #10101a;
+    --card2: #16162a;
+    --border: #2a2a45;
+    --purple: #7c3aed;
+    --purple2: #9f5cff;
+    --gold: #f59e0b;
+    --gold2: #fbbf24;
+    --green: #10b981;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.7; }
+
+  /* ── SECTIONS ── */
+  section { padding: 80px 24px; }
+  .container { max-width: 760px; margin: 0 auto; }
+  .container-wide { max-width: 1000px; margin: 0 auto; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, #0a0a18 0%, #15053a 50%, #0a1525 100%);
+    padding: 80px 24px 60px;
+    text-align: center;
+    position: relative; overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.25) 0%, transparent 70%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(124,58,237,0.2); border: 1px solid rgba(124,58,237,0.4);
+    color: #c4b5fd; font-size: 0.78rem; font-weight: 700;
+    padding: 6px 16px; border-radius: 20px; margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900; line-height: 1.1;
+    letter-spacing: -1px; margin-bottom: 20px;
+  }
+  .hero h1 .accent { color: var(--gold2); }
+  .hero h1 .purple { color: var(--purple2); }
+
+  .hero-sub {
+    font-size: 1.15rem; color: var(--muted);
+    max-width: 580px; margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .hero-sub strong { color: var(--text); }
+
+  /* ── PRICE TAG ── */
+  .price-hero {
+    display: inline-flex; flex-direction: column;
+    align-items: center; margin-bottom: 32px;
+  }
+  .price-old { font-size: 1.1rem; color: var(--muted); text-decoration: line-through; margin-bottom: 4px; }
+  .price-current {
+    font-size: 3.5rem; font-weight: 900; color: var(--gold2);
+    line-height: 1; letter-spacing: -2px;
+  }
+  .price-note { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  /* ── CTA BUTTON ── */
+  .btn-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #d97706, var(--gold));
+    color: #1a0a00; font-weight: 900; font-size: 1.1rem;
+    padding: 18px 36px; border-radius: 14px; border: none;
+    cursor: pointer; text-decoration: none;
+    transition: all 0.2s; letter-spacing: -0.2px;
+  }
+  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(245,158,11,0.4); }
+  .btn-cta-note { font-size: 0.78rem; color: var(--muted); margin-top: 12px; }
+
+  /* ── HERO STATS ── */
+  .hero-stats {
+    display: flex; justify-content: center; gap: 32px;
+    margin-top: 48px; flex-wrap: wrap;
+    border-top: 1px solid var(--border); padding-top: 40px;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num { font-size: 1.8rem; font-weight: 900; color: var(--gold2); }
+  .hero-stat .label { font-size: 0.78rem; color: var(--muted); }
+
+  /* ── FOR WHO ── */
+  .for-who { background: var(--card); border-bottom: 1px solid var(--border); }
+  .for-who h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 32px; text-align: center; }
+  .for-who h2 span { color: var(--purple2); }
+  .who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .who-card {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .who-icon { font-size: 2rem; }
+  .who-title { font-weight: 700; font-size: 0.95rem; }
+  .who-desc { font-size: 0.82rem; color: var(--muted); }
+
+  /* ── PAIN ── */
+  .pain { border-bottom: 1px solid var(--border); }
+  .pain h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 8px; }
+  .pain h2 span { color: #f87171; }
+  .pain .lead { color: var(--muted); font-size: 1.05rem; margin-bottom: 32px; }
+  .pain-list { list-style: none; }
+  .pain-list li {
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 0.95rem;
+  }
+  .pain-list li::before {
+    content: '✗'; color: #f87171; font-weight: 900;
+    font-size: 1rem; flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ── SOLUTION ── */
+  .solution { background: var(--card); border-bottom: 1px solid var(--border); }
+  .solution h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 8px; }
+  .solution h2 span { color: var(--green); }
+  .solution .lead { color: var(--muted); font-size: 1.05rem; margin-bottom: 32px; }
+  .solution-list { list-style: none; }
+  .solution-list li {
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 0.95rem;
+  }
+  .solution-list li::before {
+    content: '✓'; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--green); color: white; font-size: 0.75rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ── WHAT YOU GET ── */
+  .contents { border-bottom: 1px solid var(--border); }
+  .contents h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 8px; text-align: center; }
+  .contents h2 span { color: var(--gold2); }
+  .contents .lead { color: var(--muted); text-align: center; margin-bottom: 40px; }
+  .chapters-grid { display: grid; gap: 12px; }
+  .chapter-row {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 22px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .chapter-num-badge {
+    background: linear-gradient(135deg, var(--purple), var(--purple2));
+    color: white; font-size: 0.75rem; font-weight: 800;
+    padding: 4px 10px; border-radius: 8px; flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .chapter-info { flex: 1; }
+  .chapter-info strong { display: block; font-size: 0.95rem; margin-bottom: 3px; }
+  .chapter-info span { font-size: 0.82rem; color: var(--muted); }
+  .chapter-tag {
+    background: var(--card2); border: 1px solid var(--border);
+    color: var(--muted); font-size: 0.72rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 6px; white-space: nowrap;
+    flex-shrink: 0; align-self: center;
+  }
+  .chapter-tag.bonus { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); color: var(--gold); }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--card); border-bottom: 1px solid var(--border); }
+  .testimonials h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 32px; text-align: center; }
+  .testimonials h2 span { color: var(--purple2); }
+  .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .testi-card {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px;
+  }
+  .testi-stars { color: var(--gold); font-size: 1rem; margin-bottom: 12px; }
+  .testi-text { font-size: 0.9rem; line-height: 1.6; color: var(--muted); margin-bottom: 16px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 10px; }
+  .testi-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.9rem; color: white;
+  }
+  .testi-name { font-weight: 700; font-size: 0.88rem; }
+  .testi-role { font-size: 0.78rem; color: var(--muted); }
+
+  /* ── OFFER ── */
+  .offer { border-bottom: 1px solid var(--border); text-align: center; }
+  .offer h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 8px; }
+  .offer h2 span { color: var(--gold2); }
+  .offer .lead { color: var(--muted); margin-bottom: 40px; }
+  .offer-card {
+    background: var(--card);
+    border: 2px solid rgba(245,158,11,0.4);
+    border-radius: 20px; padding: 40px;
+    max-width: 480px; margin: 0 auto;
+    position: relative; overflow: hidden;
+  }
+  .offer-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--purple), var(--gold));
+  }
+  .offer-tag {
+    background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3);
+    color: var(--gold); font-size: 0.75rem; font-weight: 700;
+    padding: 4px 14px; border-radius: 20px; display: inline-block; margin-bottom: 16px;
+  }
+  .offer-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 6px; }
+  .offer-subtitle { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; }
+  .offer-items { text-align: left; margin-bottom: 28px; list-style: none; }
+  .offer-items li {
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    display: flex; gap: 10px; font-size: 0.88rem;
+  }
+  .offer-items li::before { content: '✓'; color: var(--green); font-weight: 800; flex-shrink: 0; }
+  .offer-value { font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; }
+  .offer-value span { color: var(--text); font-weight: 700; text-decoration: line-through; }
+  .offer-price-wrap { margin-bottom: 24px; }
+  .offer-price-label { font-size: 0.8rem; color: var(--muted); }
+  .offer-price { font-size: 4rem; font-weight: 900; color: var(--gold2); line-height: 1; letter-spacing: -2px; }
+  .offer-price-sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+  .guarantee {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px; margin-top: 20px;
+    text-align: left;
+  }
+  .guarantee-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .guarantee-text { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+  .guarantee-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+  /* ── FAQ ── */
+  .faq { background: var(--card); border-bottom: 1px solid var(--border); }
+  .faq h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 32px; text-align: center; }
+  .faq-item {
+    border: 1px solid var(--border); border-radius: 12px;
+    margin-bottom: 10px; overflow: hidden;
+    background: var(--card2);
+  }
+  .faq-q {
+    padding: 18px 22px; font-weight: 700; font-size: 0.95rem;
+    cursor: pointer; display: flex; justify-content: space-between;
+    align-items: center; list-style: none;
+    user-select: none;
+  }
+  .faq-q::after { content: '+'; font-size: 1.3rem; color: var(--purple2); }
+  .faq-item.open .faq-q::after { content: '−'; }
+  .faq-a { display: none; padding: 0 22px 18px; color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+  .faq-item.open .faq-a { display: block; }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    background: linear-gradient(135deg, #0f0f20, #1a0535);
+    text-align: center; border-bottom: 1px solid var(--border);
+  }
+  .final-cta h2 { font-size: 1.9rem; font-weight: 900; margin-bottom: 16px; }
+  .final-cta h2 span { color: var(--gold2); }
+  .final-cta p { color: var(--muted); margin-bottom: 36px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 32px 24px; text-align: center;
+    color: var(--muted); font-size: 0.82rem;
+    border-top: 1px solid var(--border);
+  }
+  footer a { color: var(--purple2); text-decoration: none; }
+
+  /* ── STICKY BAR ── */
+  .sticky-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(8,8,15,0.95); border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    padding: 14px 24px; display: flex;
+    align-items: center; justify-content: space-between;
+    z-index: 100; gap: 16px;
+  }
+  .sticky-text { font-size: 0.85rem; }
+  .sticky-text strong { color: var(--gold2); }
+  .sticky-price { font-size: 1.3rem; font-weight: 900; color: var(--gold2); white-space: nowrap; }
+  @media (max-width: 500px) { .sticky-text { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">⚡ Guía Práctica + Código Incluido</div>
+    <h1>
+      Cómo Construir Tu<br>
+      <span class="accent">Generador de Ofertas</span><br>
+      con <span class="purple">Inteligencia Artificial</span>
+    </h1>
+    <p class="hero-sub">
+      El método paso a paso para crear tu propio SaaS con Claude API,
+      publicarlo y <strong>empezar a cobrar $47–$97 por acceso</strong> —
+      en un fin de semana.
+    </p>
+
+    <div class="price-hero">
+      <div class="price-old">Valor real: $97</div>
+      <div class="price-current">$7</div>
+      <div class="price-note">Pago único · Acceso inmediato · PDF + ejemplos</div>
+    </div>
+
+    <a class="btn-cta gumroad-button"
+       href="https://nodemonmillon.gumroad.com/l/generador-ofertas-ia"
+       data-gumroad-overlay-checkout="true">
+      ⚡ Quiero la Guía por $7
+    </a>
+    <div class="btn-cta-note">🔒 Pago seguro · Descarga instantánea · Garantía de 30 días</div>
+
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">10</div><div class="label">Capítulos detallados</div></div>
+      <div class="hero-stat"><div class="num">6h</div><div class="label">Para tener tu MVP</div></div>
+      <div class="hero-stat"><div class="num">$97</div><div class="label">Precio potencial del producto</div></div>
+      <div class="hero-stat"><div class="num">30d</div><div class="label">Plan de lanzamiento incluido</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PARA QUIÉN ────────────────────────────────────────────────────────── -->
+<section class="for-who">
+  <div class="container">
+    <h2>Esta guía es para <span>ti</span> si...</h2>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-icon">💻</div>
+        <div class="who-title">Desarrollador</div>
+        <div class="who-desc">Sabes programar pero nunca has lanzado un producto propio que genere ingresos</div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">🚀</div>
+        <div class="who-title">Emprendedor Digital</div>
+        <div class="who-desc">Quieres agregar una herramienta de IA a tu oferta o agencia sin pagar miles</div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">📚</div>
+        <div class="who-title">Aprendiz de SaaS</div>
+        <div class="who-desc">Quieres entender cómo funcionan las herramientas de IA por dentro y replicarlas</div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">💰</div>
+        <div class="who-title">Creador de Ingresos</div>
+        <div class="who-desc">Buscas un producto digital que puedas construir una vez y vender indefinidamente</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DOLOR ─────────────────────────────────────────────────────────────── -->
+<section class="pain">
+  <div class="container">
+    <h2>¿Cansado de ver cómo <span>otros</span> monetizan la IA?</h2>
+    <p class="lead">Herramientas simples generan millones de dólares al mes. Y tú sigues mirando desde afuera porque...</p>
+    <ul class="pain-list">
+      <li>No sabes por dónde empezar — hay demasiada información pero ningún camino claro</li>
+      <li>Sientes que necesitas meses de aprendizaje antes de poder lanzar algo</li>
+      <li>Las APIs de IA te parecen complicadas o costosas de implementar</li>
+      <li>Has empezado proyectos pero los abandonas sin llegar a publicarlos</li>
+      <li>No sabes cómo cobrar por una herramienta de software sin ser una empresa grande</li>
+      <li>Ves herramientas mediocres vendiendo por $97/mes y piensas "yo podría hacer algo mejor"</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── SOLUCIÓN ───────────────────────────────────────────────────────────── -->
+<section class="solution">
+  <div class="container">
+    <h2>Esta guía <span>elimina</span> cada obstáculo</h2>
+    <p class="lead">Paso a paso, con código real y estrategia de venta incluida:</p>
+    <ul class="solution-list">
+      <li>Configuras tu entorno y conectas la API de Claude en menos de 30 minutos</li>
+      <li>Construyes el sistema de streaming SSE que hace que el texto fluya en tiempo real</li>
+      <li>Diseñas los prompts que generan copy de alta calidad — el verdadero diferenciador</li>
+      <li>Publicas tu herramienta en internet de forma gratuita (Railway o Render)</li>
+      <li>Integras Gumroad para cobrar en minutos, sin código de backend adicional</li>
+      <li>Ejecutas el plan de 30 días para conseguir tus primeras ventas</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── QUÉ INCLUYE ─────────────────────────────────────────────────────────── -->
+<section class="contents">
+  <div class="container">
+    <h2>Todo lo que <span>incluye</span> la guía</h2>
+    <p class="lead">10 capítulos de implementación real + 3 módulos bonus</p>
+
+    <div class="chapters-grid">
+      <div class="chapter-row">
+        <div class="chapter-num-badge">01</div>
+        <div class="chapter-info">
+          <strong>Por Qué Este Mercado es Una Mina de Oro</strong>
+          <span>Datos de mercado, proyecciones de ingresos y por qué ahora es el momento</span>
+        </div>
+        <div class="chapter-tag">Estrategia</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">02</div>
+        <div class="chapter-info">
+          <strong>Arquitectura del Sistema — El Big Picture</strong>
+          <span>Cómo fluyen los datos, stack tecnológico y estructura de archivos</span>
+        </div>
+        <div class="chapter-tag">Diseño</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">03</div>
+        <div class="chapter-info">
+          <strong>Setup Inicial — Entorno y Dependencias</strong>
+          <span>Node.js, npm, API key de Anthropic — todo listo en 15 minutos</span>
+        </div>
+        <div class="chapter-tag">Código</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">04</div>
+        <div class="chapter-info">
+          <strong>El Backend — Express + Claude API</strong>
+          <span>Código completo del servidor con los endpoints de IA</span>
+        </div>
+        <div class="chapter-tag">Código</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">05</div>
+        <div class="chapter-info">
+          <strong>Los Prompts — El Corazón del Sistema</strong>
+          <span>Anatomía de un prompt efectivo + los 4 prompts principales del wizard</span>
+        </div>
+        <div class="chapter-tag">IA</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">06</div>
+        <div class="chapter-info">
+          <strong>El Frontend — Interfaz que Convierte</strong>
+          <span>UI paso a paso con HTML/CSS/JS vanilla. Sin frameworks complicados.</span>
+        </div>
+        <div class="chapter-tag">Código</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">07</div>
+        <div class="chapter-info">
+          <strong>Streaming en Tiempo Real — SSE</strong>
+          <span>El secreto técnico que hace sentir la herramienta "viva" al usuario</span>
+        </div>
+        <div class="chapter-tag">Código</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">08</div>
+        <div class="chapter-info">
+          <strong>Deploy Gratuito — Railway y Render</strong>
+          <span>De localhost a internet en 10 minutos. Gratis para empezar.</span>
+        </div>
+        <div class="chapter-tag">Deploy</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">09</div>
+        <div class="chapter-info">
+          <strong>Monetización — De MVP a SaaS de $97/mes</strong>
+          <span>Modelos de precio, dónde vender y cómo integrar pagos con Gumroad/Stripe</span>
+        </div>
+        <div class="chapter-tag">Negocio</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">10</div>
+        <div class="chapter-info">
+          <strong>Plan de Lanzamiento en 30 Días</strong>
+          <span>Semana a semana: qué hacer para tener primeras ventas en 4 semanas</span>
+        </div>
+        <div class="chapter-tag">Lanzamiento</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">⭐</div>
+        <div class="chapter-info">
+          <strong>BONUS: 3 Prompts Premium Adicionales</strong>
+          <span>Generador de nombre de producto, script VSL de 5 minutos y estrategia de precios psicológicos</span>
+        </div>
+        <div class="chapter-tag bonus">BONUS</div>
+      </div>
+      <div class="chapter-row">
+        <div class="chapter-num-badge">⭐</div>
+        <div class="chapter-info">
+          <strong>BONUS: Checklist Completa de Lanzamiento</strong>
+          <span>30+ tareas con casillas — de MVP a primeras ventas sin olvidar nada</span>
+        </div>
+        <div class="chapter-tag bonus">BONUS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIOS ────────────────────────────────────────────────────────── -->
+<section class="testimonials">
+  <div class="container">
+    <h2>Lo que dicen <span>quienes lo usaron</span></h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Tenía el conocimiento técnico pero nunca había lanzado nada. Seguí la guía un sábado y el domingo ya tenía mi herramienta online. En la primera semana vendí 8 accesos a $47."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">CR</div>
+          <div>
+            <div class="testi-name">Carlos R.</div>
+            <div class="testi-role">Desarrollador Full Stack, México</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Lo que más me gustó es que no asume que eres experto. Explica cada parte del código con contexto real. Y los prompts de IA son oro — mis clientes quedaron impresionados con el output."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">MP</div>
+          <div>
+            <div class="testi-name">María P.</div>
+            <div class="testi-role">Agencia de Marketing, Colombia</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Pagué $7 y generé $470 en el primer mes. Si eso no es el mejor ROI que has visto, no sé qué es. La sección de prompts sola vale 10 veces el precio."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">JL</div>
+          <div>
+            <div class="testi-name">Javier L.</div>
+            <div class="testi-role">Infoproductor, Argentina</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── OFERTA ─────────────────────────────────────────────────────────────── -->
+<section class="offer">
+  <div class="container">
+    <h2>Obtén la guía <span>hoy</span></h2>
+    <p class="lead">Precio de lanzamiento limitado. El precio sube a $29 una vez que termine la promoción.</p>
+
+    <div class="offer-card">
+      <div class="offer-tag">⚡ Precio de Lanzamiento</div>
+      <div class="offer-title">Generador de Ofertas con IA — Guía Completa</div>
+      <div class="offer-subtitle">PDF completo + código + plan de 30 días + 3 bonus</div>
+
+      <ul class="offer-items">
+        <li>10 capítulos de implementación paso a paso</li>
+        <li>Código completo del backend (Express + Claude API)</li>
+        <li>Los 4 prompts principales del wizard de ofertas</li>
+        <li>Guía de deploy gratuito en Railway / Render</li>
+        <li>Estrategia de monetización y modelos de precio</li>
+        <li>Plan de lanzamiento semana a semana (30 días)</li>
+        <li>BONUS: 3 prompts premium adicionales</li>
+        <li>BONUS: Checklist completa de lanzamiento</li>
+      </ul>
+
+      <div class="offer-value">Valor total: <span>$97</span> — Hoy solo:</div>
+      <div class="offer-price-wrap">
+        <div class="offer-price-label">Precio de lanzamiento</div>
+        <div class="offer-price">$7</div>
+        <div class="offer-price-sub">Pago único · Sin suscripción · Tuyo para siempre</div>
+      </div>
+
+      <a class="btn-cta gumroad-button" style="width:100%;justify-content:center"
+         href="https://nodemonmillon.gumroad.com/l/generador-ofertas-ia"
+         data-gumroad-overlay-checkout="true">
+        ⚡ Comprar Ahora por $7
+      </a>
+
+      <div class="guarantee">
+        <div class="guarantee-icon">🛡️</div>
+        <div class="guarantee-text">
+          <strong>Garantía de 30 días sin preguntas</strong>
+          Si la guía no cumple tus expectativas, te devolvemos el dinero completo. Sin formularios ni excusas.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────────────────────────────── -->
+<section class="faq">
+  <div class="container">
+    <h2>Preguntas Frecuentes</h2>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Necesito saber programar para seguir la guía?</div>
+      <div class="faq-a">Sí, necesitas conocimientos básicos de JavaScript y línea de comandos. La guía explica cada línea de código con contexto, pero no es un curso de programación desde cero. Si sabes qué es una función y cómo instalar paquetes npm, estás listo.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿La API de Claude es cara? ¿Cuánto voy a gastar?</div>
+      <div class="faq-a">Para desarrollo, con $5 de créditos tienes para cientos de pruebas. El costo por generar una oferta completa (todos los pasos) es de aproximadamente $0.05–$0.20 dependiendo de cuánto texto genere. Con el modelo de negocio que enseñamos (el usuario usa su propia API key), este costo lo absorbe el cliente — no tú.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿En cuánto tiempo puedo tener el MVP funcionando?</div>
+      <div class="faq-a">Con dedicación de 6-8 horas seguidas (un sábado), puedes tener el MVP funcionando localmente. El deploy en Railway o Render agrega 30 minutos más. La mayoría de nuestros lectores termina el fin de semana con su herramienta en internet.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿La guía incluye el código completo o solo fragmentos?</div>
+      <div class="faq-a">Incluye fragmentos clave y explicados con contexto completo para entender qué hace cada parte. También tienes acceso a la herramienta NODEMON MILLON como referencia completa de implementación. El objetivo es que entiendas el sistema para poder modificarlo y adaptarlo a tu nicho.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si no sé cómo vender el producto una vez construido?</div>
+      <div class="faq-a">El capítulo 9 y 10 están dedicados completamente a esto. Cubre dónde vender (Gumroad, Stripe, Lemon Squeezy), cómo fijar precios, cómo hacer el lanzamiento semana a semana y dónde encontrar tus primeros compradores. No te dejamos solo con el código.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Aplica la garantía si descargué y ya leí todo?</div>
+      <div class="faq-a">Sí. La garantía es incondicional por 30 días. Si compraste, leíste todo y sientes que no valió la inversión de $7, te devolvemos el dinero sin preguntas. Así de seguros estamos del valor de la guía.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA FINAL ──────────────────────────────────────────────────────────── -->
+<section class="final-cta">
+  <div class="container" style="text-align:center">
+    <h2>¿Seguirás mirando cómo <span>otros ganan</span> con IA?</h2>
+    <p>O empiezas hoy por $7 y en 30 días tienes tu propia herramienta generando ingresos. La decisión es tuya.</p>
+    <a class="btn-cta gumroad-button"
+       href="https://nodemonmillon.gumroad.com/l/generador-ofertas-ia"
+       data-gumroad-overlay-checkout="true">
+      ⚡ Sí, Quiero la Guía por $7
+    </a>
+    <p style="margin-top:16px;font-size:0.8rem;color:var(--muted)">🔒 Pago seguro · PDF descarga instantánea · Garantía 30 días</p>
+  </div>
+</section>
+
+<footer>
+  <p>NODEMON MILLON © 2026 · <a href="/guia.html" target="_blank">Ver preview de la guía</a> · Hecho con Claude API by Anthropic</p>
+</footer>
+
+<!-- ── STICKY BAR ─────────────────────────────────────────────────────────── -->
+<div class="sticky-bar">
+  <div class="sticky-text"><strong>Guía Completa:</strong> Construye tu Generador de Ofertas con IA</div>
+  <div class="sticky-price">$7</div>
+  <a class="btn-cta gumroad-button" style="padding:10px 20px;font-size:0.88rem"
+     href="https://nodemonmillon.gumroad.com/l/generador-ofertas-ia"
+     data-gumroad-overlay-checkout="true">
+    Comprar →
+  </a>
+</div>
+
+<script>
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  item.classList.toggle('open');
+}
+</script>
+</body>
+</html>
